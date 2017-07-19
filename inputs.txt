@@ -1,43 +1,37 @@
 1
-4
+5
 Joao da Silva
 joao
-4
+5
 Joao da Silva
 joaos
-4
+5
 Joao de Souza
 joao1
-4
+5
 Ana Silveira
 ana
-4
+5
 Maria da Silva
 mari
-4
+5
 The Doctor
 doctorwho
-4
+5
 Tobias K
 perigoso
-4
+5
 Joao da Silva
 outroj
-4
+5
 The Doctor
-doctorwho2
-4
+doctorwho9
+5
 The Doctor
-doctorwho3
-4
+doctorwho10
+5
 The Doctor
-doctorwho4
-1
-The Doctor
-
-1
-Joao da Silva
-
+doctorwho11
 0
 2
 3
@@ -48,19 +42,68 @@ mari
 joao
 an
 02
+3
+ana
+joao
+27.0
+3
+mari
+ana
+5.0
+3
+outroj
+perigoso
+9.0
+3
+joaos
+perigoso
+6.0
+3
+joao1
+perigoso
+4.0
+3
+ana
+perigoso
+7.0
+3
+mari
+perigoso
+10.0
+3
+doctorwho10
+mari
+1000.0
+3
+doctorwho10
+ana
+1000.0
+3
+doctorwho10
+joao
+1000.0
+3
+doctorwho10
+joaos
+1000.0
 0
 1
 1
 Joao
 2
-joao
+Joao
 3
 joao
+4
+joao
+1
+The Doctor
 0
 2
 1
 ana
 2
 ana
+5
 0
 0

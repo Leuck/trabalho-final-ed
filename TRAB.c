@@ -26,11 +26,13 @@ int menuCadastro();
 int menuDividas();
 
 ARVORE *logins, *nomes;
+RECENTES *hist;
 
 int main ()
 {
 	logins = criaArvore('l');
 	nomes = criaArvore('n');
+    hist = inicializaTR();
 	printf("\n  --== WHO OWES WHO ==--\n");
 	printf("\tBem vindo!\n\n");
 	while ( mainMenu() );
@@ -70,44 +72,62 @@ int menuCadastro() {
 	int opt, err;
 	char *login, *nome;
 	PESSOA *p;
+    LISTA_P *lp;
 
 	printf("=============\n");
 	printf("Menu Cadastro\n");
 	printf("=============\n");
 	printf("  1. Consulta por Nome\n");
-	printf("  2. Consulta por Login\n");
-	printf("  3. Consulta por Login (exata)\n");
-	printf("  4. Adiciona registro\n");
-	printf("  5. Remove registro\n\n");
+	printf("  2. Consulta por Nome (exato)\n");
+	printf("  3. Consulta por Login\n");
+	printf("  4. Consulta por Login (exato)\n");
+	printf("  5. Adiciona registro\n");
+	printf("  6. Remove registro\n\n");
 	printf("  0. Voltar\n\n");
 	sscanf(lerstring(),"%d",&opt);
 	printf("\n");
 	switch ( opt ) {
 		case 1: {
+                lp = criaListaP();
 				printf("-> Consulta por Nome\n");
 				printf("-> Nome: ");
 				imprimeListaP(
 						percorreArvore(
-							pesquisaNaArvore(
+							pesquisaNodoArvore(
 								lerstring(),
 								nomes->filho),
-							criaListaP()
+                            lp
 							)
 					     );
+                destroiListaP(lp);
+                lp=NULL;
 			} break;
 		case 2: {
+				printf("-> Consulta por Nome\n");
+				printf("-> Nome: ");
+				imprimeListaP(
+							pesquisaArvore(
+								lerstring(),
+                                'n',
+								nomes)
+					     );
+			} break;
+		case 3: {
+                lp = criaListaP();
 				printf("-> Consulta por Login\n");
 				printf("-> Login: ");
 				imprimeListaP(
 						percorreArvore(
-							pesquisaNaArvore(
+							pesquisaNodoArvore(
 								lerstring(),
 								logins->filho),
-							criaListaP()
+							lp
 							)
 					     );
+                destroiListaP(lp);
+                lp=NULL;
 			} break;
-		case 3: {
+		case 4: {
 				printf("-> Consulta por Login (exata)\n");
 				printf("-> Login: ");
 				imprimeListaP(
@@ -117,7 +137,7 @@ int menuCadastro() {
 							logins)
 					     );
 			} break;
-		case 4: {
+		case 5: {
 				printf("-> Adiciona registro\n");
 				printf("-> Nome: ");
 				nome = lerstring();
@@ -128,7 +148,7 @@ int menuCadastro() {
 				err += cadastraP( p, nomes);
 				if (err!=0) printf("Erro: nao foi possivel cadastrar.\n");
 			} break;
-		case 5: {
+		case 6: {
 			} break;
 		case 0: {
 				return 0;
@@ -143,6 +163,7 @@ int menuDividas() {
 	int opt;
 	float valor;
 	char *login1, *login2;
+    RELACAO *r;
     NODO_R *nodo_relacao;
     PESSOA *p;
 	printf("============\n");
@@ -151,7 +172,8 @@ int menuDividas() {
 	printf("  1. Consulta dividas de um login (exato)\n");
 	printf("  2. Consulta balanço de um login (exato)\n");
 	printf("  3. Adiciona registro\n");
-	printf("  4. Remove registro\n\n");
+	printf("  4. Remove registro\n");
+	printf("  5. Historico (ultimas 10 transacoes)\n\n");
 	printf("  0. Voltar\n\n");
 	sscanf(lerstring(),"%d",&opt);
 	printf("\n");
@@ -196,11 +218,15 @@ int menuDividas() {
 				login2 = lerstring();
 				printf("-> Valor: ");
 				scanf("%f",&valor);
-				if (criaRelacao(pesquisaLogin(login1,logins),
-						pesquisaLogin(login2,logins),
-								valor)!=NULL) {
+                r = NULL;
+                r = criaRelacao(
+                        pesquisaLogin(login1,logins),
+                        pesquisaLogin(login2,logins),
+                        valor);
+				if ( r!=NULL ) {
 					printf("Divida Inserida\n");
 					printf("%s emprestou a %s $%.2f\n",login1,login2,valor);
+                    lembrar(r,hist);
 				}
 				else {
 					printf("Erro: divida nao pode ser inserida.\n");
@@ -209,6 +235,11 @@ int menuDividas() {
                 free(login2);
 			} break;
 		case 4: {
+			} break;
+		case 5: {
+                printf("-> Historico (ultimas 10 transacoes)\n\n");
+                imprimeHist(hist);
+                printf("\n");
 			} break;
 		case 0: {
 				return 0;

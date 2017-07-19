@@ -195,6 +195,7 @@ LISTA_R * criaListaR() {
 	return l;
 }
 void destroiListaR(LISTA_R *l) {
+    // destroi uma lista de dividas
 	NODO_R *aux1, *aux2;
 	if (l->ini==NULL) {
 		free(l);
@@ -228,7 +229,10 @@ void adicionaR(LISTA_R *l, RELACAO *r) {
 		nodo->prox = NULL;
 	}
 }
+void removeR( RELACAO *r) {
+}
 RELACAO * criaRelacao(PESSOA *credor, PESSOA *devedor, float valor) {
+    // cadastra uma divida
 	RELACAO *r;
 	if (credor==NULL || devedor==NULL || valor<=0) {
 		fprintf(stderr,"Erro: relacao invalida.\n");
@@ -259,6 +263,7 @@ void imprimeListaR(LISTA_R *l) {
 }
 // ARVORE DE PESQUISA
 ARVORE * criaArvore(char t) {
+    // inicializa arvore de pesquisa
 	ARVORE *a;
 	if (t!='l' && t!='n') return NULL;
 	a = malloc(sizeof(ARVORE));
@@ -267,6 +272,7 @@ ARVORE * criaArvore(char t) {
 	return a;
 }
 NODO_A *criaNodoA(char chave) {
+    // cria nodo para arvore de pesquisa
 	NODO_A *n;
 	n = malloc(sizeof(NODO_A));
 	if (n==NULL) {
@@ -281,6 +287,7 @@ NODO_A *criaNodoA(char chave) {
 }
 LISTA_P * percorreArvore( NODO_A *raiz, LISTA_P *l) {
 	// percorre arvore adicionando as pessoas encontradas a uma lista
+    // percorre a partir de um nodo, todos seus filhos e seus irmaos a direita
 	NODO_P *aux;
 	if (raiz==NULL || l==NULL) return NULL;
 	aux = raiz->l->ini;
@@ -293,8 +300,8 @@ LISTA_P * percorreArvore( NODO_A *raiz, LISTA_P *l) {
 	return l;
 }
 NODO_A * inserePessoaNaArvore( char *nome, NODO_A *raiz) {
-	//
 	// retornar nodo onde pessoa deve ser inserida
+    //
 	//  se primeiro caractere do nome == chave da raiz
 	//    se fim do nome:
 	//      inserir aqui
@@ -379,29 +386,29 @@ int cadastraP(PESSOA *p, ARVORE *a) {
 	adicionaP(aux->l,p);
 	return 0;
 }
-NODO_A * pesquisaNaArvore (char *nome, NODO_A *raiz) {
-	//
+NODO_A * pesquisaNodoArvore (char *nome, NODO_A *raiz) {
 	// Retorna nodo correspondente a nome
+    //
 	// se primeiro char de nome == chave da raiz
 	//   se fim do nome:
 	//     retorna raiz
 	//   se nao fim do nome E raiz possui filhos:
-	//     pesquisaNaArvore( proximo char, filho da raiz )
+	//     pesquisaNodoArvore( proximo char, filho da raiz )
 	//   else
 	//     retorna NULL
 	// se primeiro char de nome != chave da raiz:
 	//   se raiz possui irmao:
-	//     pesquisaNaArvore( mesmo char, irmao da raiz)
+	//     pesquisaNodoArvore( mesmo char, irmao da raiz)
 	//   se raiz nao possui irmao:
 	//     retorna NULL
 	//
 	if ( nome[0]==raiz->chave ){
 		if ( nome[1] == '\0' ) return raiz;
-		else if ( raiz->filho!=NULL ) return pesquisaNaArvore( &nome[1],raiz->filho);
+		else if ( raiz->filho!=NULL ) return pesquisaNodoArvore( &nome[1],raiz->filho);
 		else return NULL;
 	}
 	else {
-		if ( raiz->irmao != NULL ) return pesquisaNaArvore( nome,raiz->irmao );
+		if ( raiz->irmao != NULL ) return pesquisaNodoArvore( nome,raiz->irmao );
 		else return NULL;
 	}
 }
@@ -420,19 +427,19 @@ LISTA_P * pesquisaArvore(char *nome, char tipo, ARVORE *a) {
 		fprintf(stderr,"Erro: pesquisaArvore(): arvore vazia.\n");
 		return NULL;
 	}
-	aux = pesquisaNaArvore(nome, a->filho);
+	aux = pesquisaNodoArvore(nome, a->filho);
 	if (aux==NULL) return NULL;
 	return aux->l;
 }
 PESSOA * pesquisaLogin(char *login, ARVORE *a) {
+    // procura e retorna pessoa correspondente a login
+    // em uma arvore de pesquisa de logins
 	LISTA_P *lista;
 	lista = pesquisaArvore(login,'l',a);
 	if (lista==NULL) return NULL;
 	else if (lista->ini==NULL) return NULL;
 	else return lista->ini->p;
 }
-
-// CADASTRO DE DIVIDAS
 
 // LerString
 char *lerstring () {
@@ -444,4 +451,111 @@ char *lerstring () {
 	str = (char*) malloc((strlen(buffer)+1)*sizeof(char));
 	strcpy(str,buffer);
 	return str;
+}
+
+// TRANSACOES RECENTES
+RECENTES * inicializaTR() {
+    //inicializa uma lista de transacoes recentes
+    int i;
+    RECENTES *l;
+    l = malloc(sizeof(RECENTES));
+    for (i=0;i<10;i++) l->dados[i]=NULL;
+    l->ini=-1;
+    l->fin=-1;
+    l->tam=0;
+    return l;
+}
+void lembrar(RELACAO *r, RECENTES *l) {
+    // adiciona uma relacao a lista de recentes
+    // lista circular em contiguidade fisica
+    if (r==NULL || l==NULL) return;
+    if (l->ini==-1) {
+        l->ini = 0;
+        l->fin = 0;
+        l->tam = 1;
+        l->dados[0]=r;
+    }
+    else if ( (l->ini<=l->fin) && (l->fin<9) ) {
+        l->dados[l->fin+1]=r;
+        l->fin++;
+        l->tam=1+(l->fin-l->ini);
+    }
+    else if ( (l->fin==9) && (l->ini>=0) ) {
+        l->dados[0]=r;
+        l->ini++;
+        l->fin=0;
+        l->tam=1+(l->fin-l->ini);
+    }
+    else if ( (l->ini>l->fin) && (l->ini<9) ) {
+        l->ini++;
+        l->fin++;
+        l->dados[l->fin]=r;
+        l->tam=11-(l->ini-l->fin);
+    }
+    else if ( (l->ini==9) && (l->fin<9) ) {
+        l->ini=0;
+        l->fin++;
+        l->dados[l->fin]=r;
+        l->tam=1+(l->fin-l->ini);
+    }
+}
+RELACAO * acessaHist( RECENTES *l, int pos ) {
+    // acessa item da lista de recentes
+    int ini, tam;
+    ini=l->ini;
+    tam=l->tam;
+    if ( pos > tam ) return NULL;
+    if ( pos+ini>9 ) return l->dados[pos+ini-10];
+    if ( pos+ini<=9 ) return l->dados[pos+ini];
+    return NULL;
+}
+void imprimeHist(RECENTES *l) {
+    // imprime o conteudo da lista de recentes na tela
+    int i;
+    RELACAO *r;
+    for (i=0; i<l->tam; i++) {
+        r=acessaHist(l,i);
+		printf("%s (%s) deve $%.2f a %s (%s)\n",
+				r->devedor->nome,
+				r->devedor->login,
+				r->valor,
+				r->credor->nome,
+				r->credor->login);
+    }
+}
+// GRAFO DE VINCULOS FINANCEIROS
+GRAFO * geraGrafo (ARVORE *a) {
+    int i, j, n;
+    NODO_P *np;
+    GRAFO *g;
+    LISTA_P *lp;
+    LISTA_R *lr;
+    // obtem lista com todas pessoas
+    lp= criaListaP();
+    lr= criaListaR();
+    percorreArvore( a->filho, lp );
+    // aloca matriz de relacoes
+    n = lp->tam;
+    g = malloc(sizeof(GRAFO));
+    g->m = malloc(sizeof(float*)*n);
+    if (g->m == NULL ) return NULL;
+    for (i=0;i<n;i++) {
+        g->m[i] = malloc(sizeof(float)*n);
+        if (g->m==NULL) return NULL;
+    }
+    // aloca lista contigua de pessoas
+    g->p = malloc(sizeof(PESSOA*)*n);
+    if (g->p==NULL) return NULL;
+    // preenche lista contigua de pessoas
+    np = lp->ini;
+    for (i=0,i<n;i++) {
+        g->p[i] = np->p;
+        np = np->prox;
+    }
+    // inicializa matriz de relacoes
+    for (i=0;i<n;i++) {
+        for (j=0;j<n;j++) {
+            g->m[i][j] = 0;
+        }
+    }
 }
