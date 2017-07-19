@@ -40,7 +40,7 @@ int main ()
 }
 
 int mainMenu() {
-	int opt;
+	int opt=-1;
 	printf("==============\n");
 	printf("Menu Principal\n");
 	printf("==============\n");
@@ -70,7 +70,7 @@ int mainMenu() {
 	return 1;
 }
 int menuCadastro() {
-	int opt, err;
+	int opt=-1, err;
 	char *login, *nome;
 	PESSOA *p;
     LISTA_P *lp;
@@ -161,17 +161,17 @@ int menuCadastro() {
 	return 1;
 }
 int menuDividas() {
-	int opt;
+	int opt=-1;
 	float valor;
 	char *login1, *login2;
     RELACAO *r;
     NODO_R *nodo_relacao;
     PESSOA *p;
 	printf("===============\n");
-	printf("Menu Financeiro\n\n");
+	printf("Menu Financeiro\n");
 	printf("===============\n");
 	printf("  1. Consulta dividas de um login (exato)\n");
-	printf("  2. Consulta balanço de um login (exato)\n");
+	printf("  2. Consulta balanco de um login (exato)\n");
 	printf("  3. Adiciona registro\n");
 	printf("  4. Remove registro\n");
 	printf("  5. Historico (ultimas 10 transacoes)\n");
@@ -191,10 +191,14 @@ int menuDividas() {
                             logins)->dividas );
 			} break;
 		case 2: {
-                printf("-> Consulta balanço de um login (exato)\n");
+                printf("-> Consulta balanco de um login (exato)\n");
 				printf("-> Login: ");
                 login1 = lerstring();
                 p = pesquisaLogin( login1, logins);
+                if ( p==NULL ) {
+                    printf("Login nao encontrado\n");
+                    return NULL;
+                }
                 printf("Dividas de %s:\n",login1);
                 imprimeListaR( p->dividas );
                 printf("Emprestimos de %s:\n",login1);

@@ -1,7 +1,7 @@
 /*
  * Ricardo Frederico Leuck Filho
  * TRABALHO FINAL - ESTRUTURAS DE DADOS 2017/1
- * FUNCOES
+ * wowlib.c - FUNCOES
  */
 
 #include<assert.h>  /* Todas as bibliotecas padrao ANSI C            */
@@ -217,6 +217,7 @@ void adicionaR(LISTA_R *l, RELACAO *r) {
 	nodo->r = r;
 	if (l->ini == NULL) {
 		l->ini = nodo;
+        l->tam = 1;
 		nodo->prox = NULL;
 		return;
 	}
@@ -229,6 +230,7 @@ void adicionaR(LISTA_R *l, RELACAO *r) {
 			aux = aux->prox;
 		}
 		aux->prox = nodo;
+        l->tam++;
 		nodo->prox = NULL;
 	}
 }
@@ -405,6 +407,10 @@ NODO_A * pesquisaNodoArvore (char *nome, NODO_A *raiz) {
 	//   se raiz nao possui irmao:
 	//     retorna NULL
 	//
+    if ( raiz==NULL ) {
+        printf("Erro: cadastro vazio\n");
+        return NULL;
+    }
 	if ( nome[0]==raiz->chave ){
 		if ( nome[1] == '\0' ) return raiz;
 		else if ( raiz->filho!=NULL ) return pesquisaNodoArvore( &nome[1],raiz->filho);
@@ -450,6 +456,7 @@ char *lerstring () {
 	do {
 		fgets(buffer,499,stdin);
 	} while( strcmp(buffer, "\n")==0 );
+    buffer[499]='\n';
 	*(strchr(buffer,'\n'))='\0';
 	str = (char*) malloc((strlen(buffer)+1)*sizeof(char));
 	strcpy(str,buffer);
@@ -544,10 +551,12 @@ GRAFO * geraGrafo (ARVORE *a) {
         nr=np->p->dividas->ini;
         while ( nr!=NULL ) {
             adicionaR(lr, nr->r);
+            nr = nr->prox;
         }
         nr=np->p->emprestimos->ini;
         while ( nr!=NULL ) {
             adicionaR(lr, nr->r);
+            nr = nr->prox;
         }
         np=np->prox;
     }
@@ -593,7 +602,20 @@ GRAFO * geraGrafo (ARVORE *a) {
             }
         }
         if (icredor!=-1 && idevedor!=-1) {
-            g->m[icredor][idevedor]=nr->r->valor;
+            g->m[icredor][idevedor]+=nr->r->valor;
         }
+        nr=nr->prox;
     }
+    for (i=0;i<n;i++) {
+        printf(" %8.8s",g->p[i]->login);
+    }
+    printf("\n");
+    for (i=0;i<n;i++) {
+        for (j=0;j<n;j++) {
+            printf(" %8.2f",g->m[j][i]);
+        }
+        printf("   %s",g->p[i]->login);
+        printf("\n");
+    }
+    return g;
 }

@@ -1,7 +1,7 @@
 /*
  * Ricardo Frederico Leuck Filho
  * TRABALHO FINAL - ESTRUTURAS DE DADOS 2017/1
- * ARQUIVO HEADER - WOWLIB
+ * wowlib.h - ARQUIVO HEADER
  */
 
 #ifndef WOWLIB
