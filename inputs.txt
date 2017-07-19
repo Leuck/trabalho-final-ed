@@ -1,0 +1,66 @@
+1
+4
+Joao da Silva
+joao
+4
+Joao da Silva
+joaos
+4
+Joao de Souza
+joao1
+4
+Ana Silveira
+ana
+4
+Maria da Silva
+mari
+4
+The Doctor
+doctorwho
+4
+Tobias K
+perigoso
+4
+Joao da Silva
+outroj
+4
+The Doctor
+doctorwho2
+4
+The Doctor
+doctorwho3
+4
+The Doctor
+doctorwho4
+1
+The Doctor
+
+1
+Joao da Silva
+
+0
+2
+3
+ana
+mari
+24.0
+3
+joao
+an
+02
+0
+1
+1
+Joao
+2
+joao
+3
+joao
+0
+2
+1
+ana
+2
+ana
+0
+0
