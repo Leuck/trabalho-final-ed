@@ -222,7 +222,10 @@ void adicionaR(LISTA_R *l, RELACAO *r) {
 	}
 	else {
 		aux=l->ini;
+        // nao adiciona mesma relacao duas vezes
+        if ( r == aux->r ) return;
 		while (aux->prox != NULL) {
+            if ( r == aux->prox->r ) return;
 			aux = aux->prox;
 		}
 		aux->prox = nodo;
@@ -525,15 +528,29 @@ void imprimeHist(RECENTES *l) {
 }
 // GRAFO DE VINCULOS FINANCEIROS
 GRAFO * geraGrafo (ARVORE *a) {
-    int i, j, n;
+    int i, j, n, icredor, idevedor;
     NODO_P *np;
+    NODO_R *nr;
     GRAFO *g;
     LISTA_P *lp;
-    LISTA_R *lr;
+    LISTA_R *lr, *aux;
     // obtem lista com todas pessoas
     lp= criaListaP();
-    lr= criaListaR();
     percorreArvore( a->filho, lp );
+    // obtem lista com todas relacoes
+    lr= criaListaR();
+    np = lp->ini;
+    while ( np!=NULL ) {
+        nr=np->p->dividas->ini;
+        while ( nr!=NULL ) {
+            adicionaR(lr, nr->r);
+        }
+        nr=np->p->emprestimos->ini;
+        while ( nr!=NULL ) {
+            adicionaR(lr, nr->r);
+        }
+        np=np->prox;
+    }
     // aloca matriz de relacoes
     n = lp->tam;
     g = malloc(sizeof(GRAFO));
@@ -548,7 +565,7 @@ GRAFO * geraGrafo (ARVORE *a) {
     if (g->p==NULL) return NULL;
     // preenche lista contigua de pessoas
     np = lp->ini;
-    for (i=0,i<n;i++) {
+    for (i=0;i<n;i++) {
         g->p[i] = np->p;
         np = np->prox;
     }
@@ -556,6 +573,27 @@ GRAFO * geraGrafo (ARVORE *a) {
     for (i=0;i<n;i++) {
         for (j=0;j<n;j++) {
             g->m[i][j] = 0;
+        }
+    }
+    // preenche matriz de relacoes
+    nr = lr->ini;
+    while (nr!=NULL) {
+        icredor = -1;
+        idevedor = -1;
+        for (i=0;i<n;i++) {
+            if ( nr->r->credor == g->p[i] ) {
+                icredor = i;
+                break;
+            }
+        }
+        for (i=0;i<n;i++) {
+            if ( nr->r->devedor == g->p[i] ) {
+                idevedor = i;
+                break;
+            }
+        }
+        if (icredor!=-1 && idevedor!=-1) {
+            g->m[icredor][idevedor]=nr->r->valor;
         }
     }
 }

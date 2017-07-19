@@ -27,6 +27,7 @@ int menuDividas();
 
 ARVORE *logins, *nomes;
 RECENTES *hist;
+GRAFO *g;
 
 int main ()
 {
@@ -44,7 +45,7 @@ int mainMenu() {
 	printf("Menu Principal\n");
 	printf("==============\n");
 	printf("  1. Cadastro\n");
-	printf("  2. Dividas\n");
+	printf("  2. Financeiro\n");
 	printf("  3. Salvar dados\n\n");
 	printf("  0. Sair\n\n");
 	sscanf(lerstring(),"%d",&opt);
@@ -166,14 +167,15 @@ int menuDividas() {
     RELACAO *r;
     NODO_R *nodo_relacao;
     PESSOA *p;
-	printf("============\n");
-	printf("Menu Dividas\n\n");
-	printf("============\n");
+	printf("===============\n");
+	printf("Menu Financeiro\n\n");
+	printf("===============\n");
 	printf("  1. Consulta dividas de um login (exato)\n");
 	printf("  2. Consulta balanço de um login (exato)\n");
 	printf("  3. Adiciona registro\n");
 	printf("  4. Remove registro\n");
-	printf("  5. Historico (ultimas 10 transacoes)\n\n");
+	printf("  5. Historico (ultimas 10 transacoes)\n");
+	printf("  6. Grafo de vinculos financeiros\n\n");
 	printf("  0. Voltar\n\n");
 	sscanf(lerstring(),"%d",&opt);
 	printf("\n");
@@ -240,6 +242,10 @@ int menuDividas() {
                 printf("-> Historico (ultimas 10 transacoes)\n\n");
                 imprimeHist(hist);
                 printf("\n");
+			} break;
+		case 6: {
+                printf("-> Grafo de vinculos financeiros\n\n");
+                g = geraGrafo(nomes);
 			} break;
 		case 0: {
 				return 0;
