@@ -18,8 +18,11 @@ Limpa o diretorio de compilacao:
 Para compilar, rodar o programa com as entradas de dados definidas
 em `inputs.txt`:
 
-```make check
-./wow```
+```
+make check
+./wow
+```
+Selecionar opcao `4. Carregar dados` e carregar arquivo `dados.wow`
 
 ## Estruturas de dados utilizadas
 
