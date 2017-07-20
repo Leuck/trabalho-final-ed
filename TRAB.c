@@ -1,6 +1,7 @@
 /*
  * Ricardo Frederico Leuck Filho
  * TRABALHO FINAL - ESTRUTURAS DE DADOS 2017/1
+ * TRAB.c - interface e definicao dos menus
  */
 
 #include<assert.h>  /* Todas as bibliotecas padrao ANSI C            */
@@ -37,16 +38,19 @@ int main ()
 	printf("\n  --== WHO OWES WHO ==--\n");
 	printf("\tBem vindo!\n\n");
 	while ( mainMenu() );
+    destroiGrafo(g);
 }
 
 int mainMenu() {
 	int opt=-1;
+    char *aux;
 	printf("==============\n");
 	printf("Menu Principal\n");
 	printf("==============\n");
 	printf("  1. Cadastro\n");
 	printf("  2. Financeiro\n");
-	printf("  3. Salvar dados\n\n");
+	printf("  3. Salvar dados\n");
+	printf("  4. Carregar dados\n\n");
 	printf("  0. Sair\n\n");
 	sscanf(lerstring(),"%d",&opt);
 	printf("\n");
@@ -58,6 +62,18 @@ int mainMenu() {
 				while ( menuDividas() );
 			} break;
 		case 3: {
+                printf("-> Salvar dados\n\nNome do arquivo: ");
+                aux = lerstring();
+                saveData(aux,nomes);
+                free(aux);
+                aux=NULL;
+			} break;
+		case 4: {
+                printf("-> Carregar dados\n\nNome do arquivo: ");
+                aux = lerstring();
+                loadData(aux,logins,nomes);
+                free(aux);
+                aux=NULL;
 			} break;
 		case 0: {
 				printf("Bye!\n");
@@ -92,51 +108,63 @@ int menuCadastro() {
                 lp = criaListaP();
 				printf("-> Consulta por Nome\n");
 				printf("-> Nome: ");
+                nome = lerstring();
 				imprimeListaP(
 						percorreArvore(
 							pesquisaNodoArvore(
-								lerstring(),
-								nomes->filho),
+								nome,
+								nomes->filho)->filho,
                             lp
 							)
 					     );
+                free(nome);
+                nome=NULL;
                 destroiListaP(lp);
                 lp=NULL;
 			} break;
 		case 2: {
 				printf("-> Consulta por Nome\n");
 				printf("-> Nome: ");
+                nome = lerstring();
 				imprimeListaP(
 							pesquisaArvore(
-								lerstring(),
+								nome,
                                 'n',
 								nomes)
 					     );
+                free(nome);
+                nome=NULL;
 			} break;
 		case 3: {
                 lp = criaListaP();
 				printf("-> Consulta por Login\n");
 				printf("-> Login: ");
+                login = lerstring();
 				imprimeListaP(
 						percorreArvore(
 							pesquisaNodoArvore(
-								lerstring(),
+								login,
 								logins->filho),
 							lp
 							)
 					     );
+                free(login);
+                login=NULL;
                 destroiListaP(lp);
                 lp=NULL;
 			} break;
 		case 4: {
 				printf("-> Consulta por Login (exata)\n");
 				printf("-> Login: ");
+                login = lerstring();
 				imprimeListaP(
 						pesquisaArvore(
-							lerstring(),
+							login,
 							'l',
 							logins)
 					     );
+                free(login);
+                login=NULL;
 			} break;
 		case 5: {
 				printf("-> Adiciona registro\n");
@@ -148,6 +176,10 @@ int menuCadastro() {
 				err = cadastraP( p, logins);
 				err += cadastraP( p, nomes);
 				if (err!=0) printf("Erro: nao foi possivel cadastrar.\n");
+                free(nome);
+                nome=NULL;
+                free(login);
+                login=NULL;
 			} break;
 		case 6: {
 			} break;
@@ -197,7 +229,7 @@ int menuDividas() {
                 p = pesquisaLogin( login1, logins);
                 if ( p==NULL ) {
                     printf("Login nao encontrado\n");
-                    return NULL;
+                    return 1;
                 }
                 printf("Dividas de %s:\n",login1);
                 imprimeListaR( p->dividas );

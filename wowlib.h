@@ -55,6 +55,7 @@ typedef struct recentes_st {
 typedef struct grafo_st {
     float **m;
     PESSOA **p;
+    int tam;
 } GRAFO;
 
 // PROTOTIPOS DE FUNCOES
@@ -90,5 +91,9 @@ RELACAO * acessaHist ( RECENTES *l, int pos );
 void imprimeHist ( RECENTES *l );
 // GRAFO DE VINCULOS FINANCEIROS
 GRAFO * geraGrafo (ARVORE *a);
+void destroiGrafo (GRAFO *g);
+// SALVA E CARREGA DADOS DE ARQUIVO
+void saveData ( char *fname, ARVORE *a );
+void loadData ( char *fname, ARVORE *logins, ARVORE *nomes );
 
 #endif

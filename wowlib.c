@@ -540,7 +540,7 @@ GRAFO * geraGrafo (ARVORE *a) {
     NODO_R *nr;
     GRAFO *g;
     LISTA_P *lp;
-    LISTA_R *lr, *aux;
+    LISTA_R *lr;
     // obtem lista com todas pessoas
     lp= criaListaP();
     percorreArvore( a->filho, lp );
@@ -563,6 +563,7 @@ GRAFO * geraGrafo (ARVORE *a) {
     // aloca matriz de relacoes
     n = lp->tam;
     g = malloc(sizeof(GRAFO));
+    g->tam = n;
     g->m = malloc(sizeof(float*)*n);
     if (g->m == NULL ) return NULL;
     for (i=0;i<n;i++) {
@@ -618,4 +619,145 @@ GRAFO * geraGrafo (ARVORE *a) {
         printf("\n");
     }
     return g;
+    destroiListaP(lp);
+    destroiListaR(lr);
+}
+void destroiGrafo ( GRAFO *g ) {
+    int i;
+    if (g==NULL) return;
+    for (i=0;i<g->tam;i++) {
+        free(g->p[i]);
+        free(g->m[i]);
+    }
+    free (g);
+    g=NULL;
+}
+void saveData (char *fname, ARVORE *a) {
+    LISTA_P *lp;
+    NODO_P *np;
+    LISTA_R *lr;
+    NODO_R *nr;
+    FILE *f;
+    if (fname==NULL || a==NULL) {
+        fprintf(stderr,"Erro: nao foi possivel salvar dados.");
+        return;
+    }
+    f = fopen(fname,"w");
+    if (f==NULL) {
+        fprintf(stderr,"Erro: nao foi possivel salvar dados.");
+        return;
+    }
+    // obtem lista com todas pessoas
+    lp= criaListaP();
+    percorreArvore( a->filho, lp );
+    // obtem lista com todas relacoes
+    lr= criaListaR();
+    np = lp->ini;
+    while ( np!=NULL ) {
+        nr=np->p->dividas->ini;
+        while ( nr!=NULL ) {
+            adicionaR(lr, nr->r);
+            nr = nr->prox;
+        }
+        nr=np->p->emprestimos->ini;
+        while ( nr!=NULL ) {
+            adicionaR(lr, nr->r);
+            nr = nr->prox;
+        }
+        np=np->prox;
+    }
+    // modelo de arquivo save
+    //
+    // [numero de pessoas]
+    // [nome 1]
+    // [login 1]
+    // .
+    // .
+    // [nome n]
+    // [login n]
+    // [numero de relacoes]
+    // [relacao 1: credor]
+    // [relacao 1: devedor]
+    // [relacao 1: valor]
+    // .
+    // .
+    // [relacao n: credor]
+    // [relacao n: devedor]
+    // [relacao n: valor]
+    fprintf(f,"%d\n",lp->tam);
+    np = lp->ini;
+    while (np!=NULL) {
+        fprintf(f,"%s\n",np->p->nome);
+        fprintf(f,"%s\n",np->p->login);
+        np = np->prox;
+    }
+    fprintf(f,"%d\n",lr->tam);
+    nr = lr->ini;
+    while (nr!=NULL) {
+        fprintf(f,"%s\n",nr->r->credor->login);
+        fprintf(f,"%s\n",nr->r->devedor->login);
+        fprintf(f,"%.2f\n",nr->r->valor);
+        nr = nr->prox;
+    }
+    destroiListaP(lp);
+    destroiListaR(lr);
+    fclose(f);
+}
+void loadData (char *fname, ARVORE *logins, ARVORE *nomes) {
+    int n, i, max=500, err;
+    char *nome, *login, *lcredor, *ldevedor, *linha;
+    float valor;
+    FILE *f;
+    PESSOA *p;
+    RELACAO *r;
+    if (fname==NULL || logins==NULL || nomes==NULL) {
+        fprintf(stderr,"Erro: nao foi possivel carregar dados\n");
+        return;
+    }
+    f = fopen(fname,"r");
+    if (f==NULL) {
+        fprintf(stderr,"Erro: nao foi possivel carregar dados\n");
+        return;
+    }
+    nome = malloc(sizeof(char)*max);
+    login = malloc(sizeof(char)*max);
+    lcredor = malloc(sizeof(char)*max);
+    ldevedor = malloc(sizeof(char)*max);
+    linha = malloc(sizeof(char)*max);
+    fgets(linha,max,f);
+    sscanf(linha,"%d",&n);
+    for (i=0;i<n;i++) {
+        fgets(nome,max,f);
+        *(strchr(nome,'\n'))='\0';
+        fgets(login,max,f);
+        *(strchr(login,'\n'))='\0';
+        p=NULL;
+        p=criaPessoa(login,nome);
+        err = cadastraP( p, logins);
+        err+= cadastraP( p, nomes);
+        if (err!=0) {
+            fprintf(stderr,"Erro: erro ao carregar arquivo");
+            return;
+        }
+    }
+    fgets(linha,max,f);
+    sscanf(linha,"%d",&n);
+    for (i=0;i<n;i++) {
+        fgets(lcredor,max,f);
+        *(strchr(lcredor,'\n'))='\0';
+        fgets(ldevedor,max,f);
+        *(strchr(ldevedor,'\n'))='\0';
+        fgets(linha,max,f);
+        sscanf(linha,"%f",&valor);
+        r = NULL;
+        r = criaRelacao(
+                pesquisaLogin(lcredor,logins),
+                pesquisaLogin(ldevedor,logins),
+                valor);
+    }
+    fclose(f);
+    free(nome);
+    free(login);
+    free(lcredor);
+    free(ldevedor);
 }

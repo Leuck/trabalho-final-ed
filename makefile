@@ -9,8 +9,9 @@ wow: TRAB.o $(OBJ)
 run: wow
 	./wow
 check: wow
-	cat inputs.txt | ./wow
-tests: tests.o $(OBJ)
-	gcc -o $@ $^ $(CFLAGS)
+	valgrind ./wow < inputs.txt
 clean:
-	rm -f wow tests *.o
+	rm -f wow data.wow *.o
+love:
+	make clean
+	make
