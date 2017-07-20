@@ -99,7 +99,8 @@ int menuCadastro() {
 	printf("  3. Consulta por Login\n");
 	printf("  4. Consulta por Login (exato)\n");
 	printf("  5. Adiciona registro\n");
-	printf("  6. Remove registro\n\n");
+	printf("  6. Remove registro\n");
+	printf("  7. Lista todos usuarios\n\n");
 	printf("  0. Voltar\n\n");
 	sscanf(lerstring(),"%d",&opt);
 	printf("\n");
@@ -182,6 +183,15 @@ int menuCadastro() {
                 login=NULL;
 			} break;
 		case 6: {
+			} break;
+		case 7: {
+                printf("-> Lista todos usuarios\n\n");
+                lp = criaListaP();
+                imprimeListaP(
+                        percorreArvore( nomes->filho, lp )
+                        );
+                destroiListaP(lp);
+                lp=NULL;
 			} break;
 		case 0: {
 				return 0;
