@@ -1,9 +1,13 @@
 ## trabalho-final-ed
-# Trabalho final da disciplina Estruturas de Dados (INF01126 Turma U) 2017/1
+# Trabalho final da disciplina 
+# Estruturas de Dados (INF01126 Turma U) 2017/1
+
+https://github.com/Leuck/trabalho-final-ed
 
 ## Como compilar
 
-Este projeto e' compilado com auxilio da ferramenta `make`
+Este projeto foi desenvolvido e testado no linux.
+A compilacao e' realizada com auxilio da ferramenta `make`
 
 Compila programa:
 `make` 
@@ -22,7 +26,8 @@ Para compilar, rodar o programa com as entradas de dados definidas
 em `inputs.txt`:
 
 ```
-make check
+make
+./wow < inputs.txt
 ./wow
 ```
 Selecionar opcao `4. Carregar dados` e carregar arquivo `dados.wow`
@@ -42,7 +47,7 @@ Selecionar opcao `4. Carregar dados` e carregar arquivo `dados.wow`
 ## Estruturas de dados utilizadas
 
 * Tipo PESSOA contem login, nome, lista de dividas e emprestimos
-* Tipo RELACAO contem valor da relacao, ponteiro para credor e devedor
+* Tipo RELACAO contem valor da relacao, ponteiros para credor e devedor
 * Listas encadeadas com insercao ordenada e deteccao de itens duplicados
   * Lista contem tamanho e ponteiro para o primeiro nodo
   * Nodos da lista tem ponteiro para o proximo item
