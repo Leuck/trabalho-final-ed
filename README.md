@@ -15,6 +15,9 @@ Limpa o diretorio de compilacao:
 `make clean`
 
 ## Como usar o programa
+O programa apresenta menus numerados e o usuario seleciona uma opcao
+digitando o numero correspondente seguido da tecla enter.
+
 Para compilar, rodar o programa com as entradas de dados definidas
 em `inputs.txt`:
 
@@ -23,6 +26,18 @@ make check
 ./wow
 ```
 Selecionar opcao `4. Carregar dados` e carregar arquivo `dados.wow`
+
+### Operacoes implementadas
+- [x] Registro de pessoas
+- [ ] Desregistro de pessoas
+- [x] Dividas de pessoas
+- [x] Lista de dividas de um usuario
+- [x] Lista de balanco (dividas e emprestimos)
+- [x] Vinculos financeiros (grafo)
+- [x] Lista de nomes (usuarios com mesmo nome)
+- [x] Busca por nome (em arvore de pesquisa)
+- [x] Lista das 10 ultimas transacoes
+- [x] Salvar e carregar dados
 
 ## Estruturas de dados utilizadas
 
