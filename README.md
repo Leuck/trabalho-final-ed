@@ -4,6 +4,15 @@
 
 https://github.com/Leuck/trabalho-final-ed
 
+## Arquivos do projeto
+
+* 'README.md'
+* 'wowlib.h': Definicao das estruturas e prototipos de funcoes
+* 'wowlib.c': Corpo das funcoes implementadas
+* 'TRAB.c': Codigo da interface (menus, etc)
+* 'inputs.txt': Exemplo de entradas do usuario.
+* 'makefile': Informa ao `make` como compilar o projeto.
+
 ## Como compilar
 
 Este projeto foi desenvolvido e testado no linux.
@@ -11,6 +20,8 @@ A compilacao e' realizada com auxilio da ferramenta `make`
 
 Compila programa:
 `make` 
+
+O programa executavel `wow` sera' criado.
 
 Compila e roda o programa imediatamente:
 `make run`
